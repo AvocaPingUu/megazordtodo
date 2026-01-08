@@ -4,30 +4,30 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Pencil, Trash2 } from "lucide-react";
-import { toggleTodoAction, deleteTodoAction, updateTodoAction, updateStatusAction } from "@/app/actions/todo-actions";
+import { deleteTodoAction, updateTodoAction, updateStatusAction } from "@/app/actions/todo-actions";
 
 export default function TodoItem({ todo }) {
-  const [editing, setEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(todo.title);
-  const [editDescription, setEditDescription] = useState(todo.description || "");
+  const [editing, setEditing] = useState(false); // edit mode state
+  const [editTitle, setEditTitle] = useState(todo.title); // title state
+  const [editDescription, setEditDescription] = useState(todo.description || ""); // description state
 
   const handleStatusChange = async (e) => {
     const formData = new FormData();
-    formData.append("id", todo.id);
-    formData.append("status", e.target.value);
-    await updateStatusAction(formData);
+    formData.append("id", todo.id); 
+    formData.append("status", e.target.value); // new status
+    await updateStatusAction(formData); // call update status action
   };
 
   const handleSave = async () => {
-    if (!editTitle.trim()) return alert("Titel darf nicht leer sein");
+    if (!editTitle.trim()) return alert("Titel darf nicht leer sein"); // validate title
 
     const formData = new FormData();
-    formData.append("id", todo.id);
-    formData.append("title", editTitle.trim());
-    formData.append("description", editDescription.trim());
+    formData.append("id", todo.id); // ID 
+    formData.append("title", editTitle.trim()); // new title
+    formData.append("description", editDescription.trim()); // new description
 
     try {
-      await updateTodoAction(formData);
+      await updateTodoAction(formData); // call update action
       setEditing(false);
     } catch (e) {
       alert("Fehler beim Speichern: " + e.message);
@@ -42,7 +42,7 @@ export default function TodoItem({ todo }) {
       transition={{ duration: 0.3 }}
       whileHover={{ scale: 1.01, y: -2 }}
       className={`
-        group flex items-start gap-3 p-5 rounded-xl border transition-all duration-200
+        group flex items-start gap-3 p-5 rounded-xl border transition-all duration-200 
         ${todo.status === "Erledigt" 
           ? "bg-green-950/40 border-green-800/50" 
           : "bg-purple-950/35 border-purple-800/50 hover:bg-purple-950/45"}
@@ -51,8 +51,8 @@ export default function TodoItem({ todo }) {
       {/* Status-Dropdown */}
       <div className="mt-1.5 relative">
         <select
-          value={todo.status}
-          onChange={handleStatusChange}
+          value={todo.status} 
+          onChange={handleStatusChange} 
           className={`
             appearance-none
             px-4 py-2 pr-10 rounded-lg text-sm font-medium
@@ -64,12 +64,12 @@ export default function TodoItem({ todo }) {
             shadow-sm
           `}
         >
-          <option value="Nicht erledigt" className="bg-purple-950 text-red-300">Nicht erledigt</option>
+          <option value="Nicht erledigt" className="bg-purple-950 text-red-300">Nicht erledigt</option> 
           <option value="In Bearbeitung" className="bg-purple-950 text-yellow-300">In Bearbeitung</option>
           <option value="Erledigt" className="bg-purple-950 text-green-300">Erledigt</option>
         </select>
 
-        {/* Custom Pfeil – hochkontrast */}
+        {/* dropdown pfeil */}
         <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
           <svg className="w-4 h-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
@@ -83,13 +83,13 @@ export default function TodoItem({ todo }) {
           <div className="space-y-4">
             <input
               value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
+              onChange={(e) => setEditTitle(e.target.value)} // update title state
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSave();
                 if (e.key === "Escape") {
-                  setEditTitle(todo.title);
-                  setEditDescription(todo.description || "");
-                  setEditing(false);
+                  setEditTitle(todo.title); // save title changes
+                  setEditDescription(todo.description || ""); // save description changes
+                  setEditing(false); // Exit edit mode
                 }
               }}
               autoFocus
@@ -103,7 +103,7 @@ export default function TodoItem({ todo }) {
 
             <textarea
               value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
+              onChange={(e) => setEditDescription(e.target.value)} // update description state
               placeholder="Beschreibung bearbeiten..."
               rows={3}
               className="
@@ -116,16 +116,16 @@ export default function TodoItem({ todo }) {
 
             <div className="flex gap-2">
               <button
-                onClick={handleSave}
+                onClick={handleSave} // save changes
                 className="px-4 py-1.5 bg-purple-700 hover:bg-purple-600 text-white text-sm rounded-lg transition-colors"
               >
                 Speichern
               </button>
               <button
                 onClick={() => {
-                  setEditTitle(todo.title);
-                  setEditDescription(todo.description || "");
-                  setEditing(false);
+                  setEditTitle(todo.title); // save title changes
+                  setEditDescription(todo.description || ""); // save description changes
+                  setEditing(false); // Exit edit mode
                 }}
                 className="px-4 py-1.5 text-purple-300 hover:text-purple-100 hover:bg-purple-900/40 text-sm rounded-lg transition-colors"
               >
@@ -135,8 +135,8 @@ export default function TodoItem({ todo }) {
           </div>
         ) : (
           <div>
-            <p className={`text-lg font-medium ${todo.status === "Erledigt" ? "line-through text-purple-400/70" : "text-purple-50"}`}>
-              {todo.title}
+            <p className={`text-lg font-medium ${todo.status === "Erledigt" ? "line-through text-purple-400/70" : "text-purple-50"}`}> 
+              {todo.title} 
             </p>
             {todo.description && (
               <p className="mt-2 text-sm text-purple-300/80 leading-relaxed">
@@ -147,11 +147,11 @@ export default function TodoItem({ todo }) {
         )}
       </div>
 
-      {/* Aktionen */}
+      {/* actions */}
       {!editing && (
         <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
           <button
-            onClick={() => setEditing(true)}
+            onClick={() => setEditing(true)} // enter edit mode
             className="p-2 rounded-lg text-purple-400 hover:text-purple-200 hover:bg-purple-900/40 transition-colors"
             title="Bearbeiten"
           >
@@ -159,7 +159,7 @@ export default function TodoItem({ todo }) {
           </button>
           <button
             onClick={() => {
-              if (confirm("Wirklich löschen?")) deleteTodoAction(todo.id);
+              if (confirm("Wirklich löschen?")) deleteTodoAction(todo.id); // delete action
             }}
             className="p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors"
             title="Löschen"
