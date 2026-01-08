@@ -6,12 +6,12 @@ import { motion } from "framer-motion";
 import { addTodo } from "@/app/actions/todo-actions";
 
 export default function TodoForm() {
-  const formRef = useRef(null);
+  const formRef = useRef(null); 
 
   async function handleAction(formData) {
     try {
-      await addTodo(formData);
-      formRef.current?.reset();
+      await addTodo(formData); // call add todo action
+      formRef.current?.reset(); // reset form after submission
     } catch (e) {
       alert(e.message);
     }

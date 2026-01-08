@@ -6,11 +6,11 @@ import { motion } from "framer-motion";
 import TodoItem from "@/components/TodoItem";
 
 export default function TodoListWithFilter({ initialTodos }) {
-  const [filter, setFilter] = useState("Alle");
+  const [filter, setFilter] = useState("Alle"); // initial filter state
 
   const filteredTodos = initialTodos.filter(todo => {
-    if (filter === "Alle") return true;
-    return todo.status === filter;
+    if (filter === "Alle") return true; // show all todos
+    return todo.status === filter; // filter by status
   });
 
   return (
@@ -19,7 +19,7 @@ export default function TodoListWithFilter({ initialTodos }) {
       <div className="flex justify-end mb-6">
         <select
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(e) => setFilter(e.target.value)} // update filter state
           className="
             appearance-none px-4 py-2 pr-10 rounded-lg text-sm font-medium
             bg-purple-900/80 border border-purple-700/60 text-purple-100
@@ -44,8 +44,8 @@ export default function TodoListWithFilter({ initialTodos }) {
           transition={{ duration: 0.4 }}
         >
           {filter === "Alle"
-            ? "Noch keine Aufgaben vorhanden..."
-            : `Keine Aufgaben mit Status "${filter}" gefunden`}
+            ? "Noch keine Aufgaben vorhanden..." // no todos message
+            : `Keine Aufgaben mit Status "${filter}" gefunden`} 
           <br />
          
         </motion.div>
@@ -65,8 +65,8 @@ export default function TodoListWithFilter({ initialTodos }) {
             },
           }}
         >
-          {filteredTodos.map((todo) => (
-            <TodoItem key={todo.id} todo={todo} />
+          {filteredTodos.map((todo) => ( // render filtered todos
+            <TodoItem key={todo.id} todo={todo} /> // render each todo item
           ))}
         </motion.div>
       )}
