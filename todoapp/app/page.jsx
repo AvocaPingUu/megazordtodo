@@ -2,6 +2,7 @@
 import Image from "next/image";
 import TodoItem from "@/components/TodoItem";
 
+
 export default function Home() {
   return (
     <main className="min-h-screen flex items-top
@@ -16,10 +17,14 @@ export default function Home() {
             Todo App
           </span>
         </h1>
-
-        <TodoItem todo={{ id: 1, title: "Erstes Todo", description: "Beschreibung des ersten Todos", completed: false }} />
+      
+        <div>
+          
+          <TodoItem todo={{ id: 1, title: "Erstes Todo", description: "Beschreibung des ersten Todos", completed: false }} /></div>
+        
 
       </div>
+      
     </main>
   );
 }
