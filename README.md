@@ -16,4 +16,5 @@
 ## Installation
 #### Libraries
 1. Icons: npm install lucide-react
-2. Animationen: npm install motion
+2. Animationen: npm install framer-motion
+

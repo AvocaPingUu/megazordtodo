@@ -1,3 +1,4 @@
+// app/actions/todo-actions.js
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -13,22 +14,26 @@ export async function addTodo(formData) {
   revalidatePath("/");
 }
 
-export async function toggleTodoAction(id,) {
-    await todos.toggleTodo(id);
-    revalidatePath("/");
+export async function toggleTodoAction(id) {
+  await todos.toggleTodo(id);
+  revalidatePath("/");
 }
 
 export async function updateTodoAction(formData) {
-    const id = formData.get("id");
-    const title = formData.get("title")?.trim();
-    
-    if (!id || !title) throw new Error("Ungültige Daten");
+  const id = formData.get("id");
+  const title = formData.get("title")?.trim();
+  const description = formData.get("description")?.trim();  // ← neu hinzugefügt
 
-    await todos.updateTodo(id, {title});
-    revalidatePath("/");
+  if (!id || !title) throw new Error("Fehlende Daten");
+
+  await todos.updateTodo(id, { 
+    title, 
+    description  // ← wird jetzt auch übergeben
+  });
+  revalidatePath("/");
 }
 
 export async function deleteTodoAction(id) {
-    await todos.deleteTodo(id);
-    revalidatePath("/");
+  await todos.deleteTodo(id);
+  revalidatePath("/");
 }

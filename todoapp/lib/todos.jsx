@@ -12,34 +12,26 @@ export async function createTodo(title, description = "") {
     description,
     completed: false,
     createdAt: new Date(),
-    updatedAt: new Date(),
   };
   todos.push(newTodo);
   return newTodo;
 }
 
-
 export async function toggleTodo(id) {
-    const todo = todos.find(t => t.id === id);
-    if (todo) {
-        todo.completed = !todo.completed;
-        todo.updatedAt = new Date();
-    }
+  const todo = todos.find(t => t.id === id);
+  if (todo) {
+    todo.completed = !todo.completed;
+  }
 }
 
-export async function updateTodo(id, {title, description}) {
-    const todo = todos.find(t => t.id === id);
-    if (todo) {
-        if (title !== undefined) {
-            todo.title = title;
-        }
-        if (description !== undefined) {
-            todo.description = description;
-        }
-        todo.updatedAt = new Date();
-    }
+export async function updateTodo(id, { title, description }) {
+  const todo = todos.find(t => t.id === id);
+  if (todo) {
+    if (title !== undefined) todo.title = title;
+    if (description !== undefined) todo.description = description;
+  }
 }
 
 export async function deleteTodo(id) {
-    todos = todos.filter(t => t.id !== id);
+  todos = todos.filter(t => t.id !== id);
 }
