@@ -1,156 +1,111 @@
-// components/TodoItem.jsx
 "use client";
 
 import { useState } from "react";
-import { Trash2, Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
+import { toggleTodoAction, deleteTodoAction, updateTodoAction } from "@/app/actions/todo-actions";
 
 export default function TodoItem({ todo }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState(todo.title);
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(todo.title);
 
-  // Platzhalter-Funktionen - später durch echte Server Actions ersetzen
-  const handleToggle = () => {
-    console.log("Toggle todo:", todo.id, !todo.completed);
-    // Hier später: toggleTodoAction(todo.id, todo.completed)
-  };
+  const handleSave = async () => {
+    if (!title.trim()) return alert("Titel darf nicht leer sein");
 
-  const handleDelete = () => {
-    if (window.confirm("Wirklich löschen?")) {
-      console.log("Delete todo:", todo.id);
-      // Hier später: deleteTodoAction(todo.id)
+    const formData = new FormData();
+    formData.append("id", todo.id);
+    formData.append("title", title.trim());
+
+    try {
+      await updateTodoAction(formData);
+      setEditing(false);
+    } catch (e) {
+      alert("Fehler: " + e.message);
     }
-  };
-
-  const handleSave = () => {
-    if (!editTitle.trim()) return;
-    console.log("Update todo:", todo.id, editTitle.trim());
-    // Hier später: updateTodoAction mit FormData
-    setIsEditing(false);
   };
 
   return (
     <div
       className={`
-        group flex items-start gap-3 p-4 rounded-xl border transition-all duration-200
-        ${
-          todo.completed
-            ? "bg-purple-950/40 border-purple-900/50"
-            : "bg-purple-950/25 border-purple-900/40 hover:bg-purple-950/40 hover:border-purple-800/60"
-        }
+        group flex items-start gap-3 p-4 rounded-xl border transition-colors
+        ${todo.completed 
+          ? "bg-purple-950/40 border-purple-900/50" 
+          : "bg-purple-950/25 border-purple-900/40 hover:bg-purple-950/35"}
       `}
     >
-      {/* Checkbox selbst gebaut */}
-      <div className="pt-1.5">
-        <input
-          type="checkbox"
-          checked={todo.completed}
-          onChange={handleToggle}
-          className={`
-            w-5 h-5 rounded border-2 
-            ${todo.completed 
-              ? "bg-purple-700 border-purple-600" 
-              : "bg-transparent border-purple-600"}
-            accent-purple-700
-            cursor-pointer
-          `}
-        />
-      </div>
+      {/* Checkbox */}
+      <input
+        type="checkbox"
+        checked={todo.completed}
+        onChange={() => toggleTodoAction(todo.id)}
+        className={`
+          w-5 h-5 mt-1.5 rounded border-2 cursor-pointer
+          ${todo.completed ? "bg-purple-700 border-purple-600" : "bg-transparent border-purple-600"}
+          accent-purple-700
+        `}
+      />
 
-      {/* Hauptinhalt */}
+      {/* Inhalt */}
       <div className="flex-1 min-w-0">
-        {isEditing ? (
+        {editing ? (
           <div className="flex flex-col sm:flex-row gap-3">
             <input
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              onKeyDown={(e) => {
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              onKeyDown={e => {
                 if (e.key === "Enter") handleSave();
                 if (e.key === "Escape") {
-                  setEditTitle(todo.title);
-                  setIsEditing(false);
+                  setTitle(todo.title);
+                  setEditing(false);
                 }
               }}
               autoFocus
-              className="
-                flex-1 px-3 py-2 rounded-lg 
-                bg-purple-950/70 border border-purple-700/60 
-                text-purple-50 placeholder:text-purple-400/60
-                focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-600/40
-              "
+              className="flex-1 px-3 py-2 rounded-lg bg-purple-950/70 border border-purple-700/60 text-purple-50 focus:outline-none focus:border-purple-500"
             />
-            <div className="flex gap-2 sm:self-center">
+            <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="
-                  px-4 py-1.5 rounded-lg text-sm font-medium
-                  bg-purple-700 hover:bg-purple-600 
-                  text-white
-                  transition-colors
-                "
+                className="px-4 py-1.5 bg-purple-700 hover:bg-purple-600 text-white text-sm rounded-lg transition-colors"
               >
                 Speichern
               </button>
               <button
                 onClick={() => {
-                  setEditTitle(todo.title);
-                  setIsEditing(false);
+                  setTitle(todo.title);
+                  setEditing(false);
                 }}
-                className="
-                  px-4 py-1.5 rounded-lg text-sm font-medium
-                  text-purple-300 hover:text-purple-100
-                  hover:bg-purple-900/40
-                  transition-colors
-                "
+                className="px-4 py-1.5 text-purple-300 hover:text-purple-100 hover:bg-purple-900/40 text-sm rounded-lg transition-colors"
               >
                 Abbrechen
               </button>
             </div>
           </div>
         ) : (
-          <>
-            <p
-              className={`
-                text-lg font-medium tracking-tight
-                ${todo.completed ? "line-through text-purple-400/70" : "text-purple-50"}
-              `}
-            >
+          <div>
+            <p className={`text-lg font-medium ${todo.completed ? "line-through text-purple-400/70" : "text-purple-50"}`}>
               {todo.title}
             </p>
             {todo.description && (
-              <p className="mt-1 text-sm text-purple-300/70">
-                {todo.description}
-              </p>
+              <p className="mt-1 text-sm text-purple-300/70">{todo.description}</p>
             )}
-          </>
+          </div>
         )}
       </div>
 
-      {/* Action Buttons */}
-      {!isEditing && (
+      {/* Aktionen */}
+      {!editing && (
         <div className="flex items-center gap-1 opacity-50 group-hover:opacity-100 transition-opacity">
           <button
-            type="button"
-            onClick={() => setIsEditing(true)}
-            className="
-              p-2 rounded-lg 
-              text-purple-400 hover:text-purple-200 
-              hover:bg-purple-900/40 
-              transition-colors
-            "
+            onClick={() => setEditing(true)}
+            className="p-2 rounded-lg text-purple-400 hover:text-purple-200 hover:bg-purple-900/40 transition-colors"
             title="Bearbeiten"
           >
             <Pencil size={18} />
           </button>
-
           <button
-            type="button"
-            onClick={handleDelete}
-            className="
-              p-2 rounded-lg 
-              text-red-400 hover:text-red-300 
-              hover:bg-red-950/30 
-              transition-colors
-            "
+            onClick={() => {
+              if (confirm("Wirklich löschen?")) deleteTodoAction(todo.id);
+            }}
+            className="p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors"
             title="Löschen"
           >
             <Trash2 size={18} />
