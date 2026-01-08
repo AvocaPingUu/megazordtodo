@@ -28,7 +28,7 @@ export default function TodoForm() {
     >
       <input
         name="title"
-        placeholder="Was musst du erledigen?"
+        placeholder="Titel*"
         required
         autoFocus
         className="
@@ -41,7 +41,7 @@ export default function TodoForm() {
 
       <textarea
         name="description"
-        placeholder="Zusätzliche Infos / Details (optional)"
+        placeholder="Beschreibung (optional)"
         rows={2}
         className="
           w-full px-4 py-3 rounded-xl 

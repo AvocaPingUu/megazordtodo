@@ -14,21 +14,28 @@ export async function addTodo(formData) {
   revalidatePath("/");
 }
 
-export async function toggleTodoAction(id) {
-  await todos.toggleTodo(id);
+export async function updateStatusAction(formData) {
+  const id = formData.get("id");
+  const status = formData.get("status");
+
+  if (!id || !status) throw new Error("Fehlende Daten");
+
+  await todos.updateStatus(id, status);
   revalidatePath("/");
 }
+
+
 
 export async function updateTodoAction(formData) {
   const id = formData.get("id");
   const title = formData.get("title")?.trim();
-  const description = formData.get("description")?.trim();  // ← neu hinzugefügt
+  const description = formData.get("description")?.trim(); 
 
   if (!id || !title) throw new Error("Fehlende Daten");
 
   await todos.updateTodo(id, { 
     title, 
-    description  // ← wird jetzt auch übergeben
+    description  
   });
   revalidatePath("/");
 }

@@ -10,17 +10,17 @@ export async function createTodo(title, description = "") {
     id: crypto.randomUUID(),
     title,
     description,
-    completed: false,
-    createdAt: new Date(),
+    status: "Nicht erledigt", 
+    
   };
   todos.push(newTodo);
   return newTodo;
 }
 
-export async function toggleTodo(id) {
+export async function updateStatus(id, newStatus) {
   const todo = todos.find(t => t.id === id);
   if (todo) {
-    todo.completed = !todo.completed;
+    todo.status = newStatus;
   }
 }
 
